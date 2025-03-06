@@ -78,5 +78,6 @@ while True:
     want_continue = input("¿Desea continuar? ")
     if want_continue in ["N", "n"]:
         break
+    print()
 
 print(f"Victorias: {wins}, Derrotas: {losses}, Empates: {ties}")
