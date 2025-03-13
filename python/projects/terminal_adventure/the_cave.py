@@ -61,38 +61,86 @@ CAVE_ENTRANCE = r"""
 """
 
 CAVE = r"""
-     ___
-    /   \\
-   /     \\__
-  /         \\
- /           \\_
-|    OSCURO    |
-|              |
-|     *   *    |
-|    *     *   |
-|   *       *  |
-|       O      |
-|      /|\\     |
-|      / \\     |
-----------------
+|.'',                                     ,''.|
+|.'.'',                                 ,''.'.|
+|.'.'.'',         Bifurcación         ,''.'.'.|
+|.'.'.'.'',                         ,''.'.'.'.|
+|.'.'.'.'.|==;                   ;==|.'.'.'.'.|
+|.'.'.'.'.|::|', _____________ ,'|::|.'.'.'.'.|
+|.'.'.'.'.|::|',|,',',',',',',|,'|::|.'.'.'.'.|
+|.'.'.'.'.|--|'.|.'.'.'.'.'.'.|.'|--|.'.'.'.'.|
+|.'.'.'.'.|::|'.|,',',',',',',|.'|::|.'.'.'.'.|
+|,',',',',|--|',|.'.'.'.'.'.'.|,'|--|,',',',',|
+|.'.'.'.'.|::|'.|,',',',',',',|.'|::|.'.'.'.'.|
+|.'.'.'.'.|==:'    <-- ? -->    ':==|.'.'.'.'.|
+|.'.'.'.'.|%%%%%%%%%%%%%%%%%%%%%%%%%|.'.'.'.'.|
+|.'.'.'.'.|%%%%%%%%%%%%%%%%%%%%%%%%%|.'.'.'.'.|
+|.'.'.'.','       /%%%%%%%%%\       ','.'.'.'.|
+|.'.'.','        /%%%%%%%%%%%\        ','.'.'.|
+|.'.','         /%%%%%%%%%%%%%\         ','.'.|
+|.','          /%%%%%%%%%%%%%%%\          ','.|
+|;____________/%%%%%%%%%%%%%%%%%\____________;|
 """
 
-FORK = r"""
-        |
-     ___|___
-    /   |   \\
-   /    |    \\
-  /     |     \\
- /      |      \\
-|       |       |
-|       |       |
-|       |       |
-|   ?   |   ?   |
-|       |       |
-|       O       |
-|      /|\\      |
-|      / \\      |
------------------
+LEFT_SWORD = r"""
++-----------------------------------------------------------------------------+
+| |       |\                                           -~ /     \  /          |
+|~~__     | \                                         | \/       /\          /|
+|    --   |  \                                        | / \    /    \     /   |
+|      |~_|   \                                       |/    \/         /      |
+|--__  |   -- |\______________________________________|    /  \     /     \   |
+|   |~~--__  |~_|____|____|____|____|____|_______|____|\ /      \/          \/|
+|   |      |~--_|__|____|____|___    __|____|__|____|_|/ \    /   \       /   |
+|___|______|__|_||___|____|____|  ()   ___|__|____|___|    \/       \  /      |
+|  \~~~~ :   | _|__|____|____|    )(    ________|____||   /  \      /  \      |
+|      | :_--~~ |_|_____|__|_  o======o  __|__|____|__|\/      \ /        \   |
+|  __--| :  |  /                  ||                  | \     /  \          /\|
+|~~  |   :  | /     espada -->    ||                  |  \  /      \      /   |
+|    |      |/                    ||                  |  /\          \  /     |
+|    |      /                ,c88888888b              |/   \          /\      |
+|    |     /                ,88888888888b              -_   \       /    \    |
++-----------------------------------------------------------------------------+
+"""
+
+LEFT = r"""
++-----------------------------------------------------------------------------+
+| |       |\                                           -~ /     \  /          |
+|~~__     | \                                         | \/       /\          /|
+|    --   |  \                                        | / \    /    \     /   |
+|      |~_|   \                                       |/    \/         /      |
+|--__  |   -- |\______________________________________|    /  \     /     \   |
+|   |~~--__  |~_|____|____|____|____|____|____|____|__|\ /      \/          \/|
+|   |      |~--_|__|____|____|____|____|____|____|____|/ \    /   \       /   |
+|___|______|__|_||____|____|____|____|____|____|____|_|    \/       \  /      |
+|  \~~~~ :   | _|___|____|____|____|____|____|____|___|   /  \      /  \      |
+|      | :_--~~ |_|____|____|____|____|____|____|____||\/      \ /        \   |
+|  __--| :  |  /                                      | \     /  \          /\|
+|~~  |   :  | /                                       |  \  /      \      /   |
+|    |      |/                                        |  /\          \  /     |
+|    |      /                                         |/   \          /\      |
+|    |     /                                           -_   \       /    \    |
++-----------------------------------------------------------------------------+
+"""
+
+KEY = r"""
+  8 8          ,o. 
+ d8o8azzzzzzzzd   b
+               `o' 
+"""
+
+POTION = r"""
+  |~|  
+  | |  
+.'   `.
+`.___.'
+"""
+
+SWORD = r"""
+ _         | |
+| | _______| |---------------------------------------------\
+|:-)_______|==[]============================================>
+|_|        | |---------------------------------------------/
+           |_|
 """
 
 TREASURE = r"""
@@ -428,6 +476,70 @@ def show_cave_location(state: dict) -> dict:
 
 
 def show_left_location(state: dict) -> dict:
+    """
+    Muestra la ubicación a la izquierda en la cueva y permite al jugador tomar decisiones.
+    Args:
+        state (dict): El estado actual del juego, que incluye información sobre 
+                      si el jugador tiene la espada y la llave, y la ubicación actual.
+    Return:
+        dict: El estado actualizado del juego después de que el jugador haya tomado una decisión.    
+    """
+    if not state["has_sword"]:
+        print(center_text(LEFT_SWORD))
+        print_slowly("Sigues el camino de la izquierda, que desciende " +
+                     "profundamente en la cueva.")
+        print_slowly(
+            "El aire se vuelve más frío y escuchas un sonido metálico.")
+        print_slowly("¡Encuentras una espada antigua clavada en una roca!\n")
+        options = ["Tomar la espada", "Dejarla e investigar más adelante",
+                   "Revisar tu inventario", "Volver atrás"]
+
+        choice = get_choice(options)
+        if choice == 1:
+            state["has_sword"] = True
+            print(center_text(SWORD))
+            print(center_text("¡Has obtenido una espada antigua!"))
+            input("\nPresione ENTER para continuar...")
+        elif choice == 2:
+            print_slowly("Decides dejar la espada por ahora.")
+        elif choice == 3:
+            show_inventory(state)
+        else:
+            state["location"] = "cave"
+    else:
+        print(center_text(LEFT))
+        print_slowly("Sigues el camino de la izquierda, que desciende " +
+                     "profundamente en la cueva.")
+        print_slowly(
+            "El aire se vuelve más frío y escuchas un sonido metálico.")
+        print_slowly("Continúas por el camino y llegas a una pequeña cámara.")
+
+        if not state["has_key"]:
+            print_slowly(
+                "¡En un rincón brillante, encuentras una llave dorada!\n")
+            options = ["Tomar la llave", "Dejarla por ahora",
+                       "Revisar tu inventario", "Volver atrás"]
+            choice = get_choice(options)
+            if choice == 1:
+                state["has_key"] = True
+                print(center_text(KEY))
+                print("¡Has obtenido una Llave dorada!")
+                input("\nPresione ENTER para continuar...")
+            elif choice == 2:
+                print_slowly("Decides dejar la llave por ahora.")
+            elif choice == 3:
+                show_inventory(state)
+            else:
+                state["location"] = "cave"
+        else:
+            print_slowly(
+                "No parece haber nada más interesante en esta cámara.\n")
+            options = ["Revisar tu inventario", "Volver atrás"]
+            choice = get_choice(options)
+            if choice == 1:
+                show_inventory(state)
+            else:
+                state["location"] = "cave"
     return state
 
 
@@ -465,14 +577,15 @@ def show_forest_location(state: dict) -> dict:
         choice = get_choice(options)
 
         if choice == 1:
-            print_slowly(
-                "Recoges las bayas y las mezclas con agua de un arroyo cercano.")
-            print_slowly("¡Has creado una Poción curativa!")
+            print_slowly("Recoges las bayas y las mezclas con agua de " +
+                         "un arroyo cercano.\n")
+            print(center_text(POTION))
+            print(center_text("¡Has creado una Poción curativa!"))
             state["has_potion"] = True
-            input("Presione ENTER para continuar...")
+            input("\nPresione ENTER para continuar...")
         elif choice == 2:
             print_slowly("Decides no tocar las bayas desconocidas.")
-            input("Presione ENTER para continuar...")
+            input("\nPresione ENTER para continuar...")
         elif choice == 3:
             show_inventory(state)
         else:
