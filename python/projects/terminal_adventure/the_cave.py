@@ -859,7 +859,7 @@ def show_exit_location(state: dict) -> dict:
     print_slowly("El tesoro del dragón contiene riquezas más allá " +
                  "de tus sueños.\n")
     print(center_text("--- FIN DE LA AVENTURA ---"))
-    print_slowly("\n¡Has completado Terminal Adventure!")
+    print_slowly("\n¡Has completado Terminal Adventure: La Cueva Misteriosa!")
     state["is_playing"] = False
     return state
 
@@ -886,7 +886,7 @@ def show_death_location(state: dict) -> dict:
                  f"{state['player_name']}.")
     print_slowly("Quizás otro aventurero tenga más suerte en el futuro.\n")
     print(center_text("--- FIN DE LA AVENTURA ---"))
-    print_slowly("\n¡Has fracasado en Terminal Adventure!")
+    print_slowly("\n¡Has fracasado en Terminal Adventure: La Cueva Misteriosa!")
     state["is_playing"] = False
     return state
 
