@@ -217,7 +217,7 @@ RIP = r"""
 | |  \/ __ _ _ __ ___   ___  | | | |_   _____ _ __ 
 | | __ / _` | '_ ` _ \ / _ \ | | | \ \ / / _ \ '__|
 | |_\ \ (_| | | | | | |  __/ \ \_/ /\ V /  __/ |   
- \____/\__,_|_| |_| |_|\___|  \___/  \_/ \___|_|               .
+ \____/\__,_|_| |_| |_|\___|  \___/  \_/ \___|_|   
 
                       -|-
                        |
@@ -521,7 +521,6 @@ def show_left_location(state: dict) -> dict:
             state["has_sword"] = True
             print(center_text(SWORD))
             print(center_text("¡Has obtenido una espada antigua!"))
-            input("\nPresione ENTER para continuar...")
         elif choice == 2:
             print_slowly("Decides dejar la espada por ahora.")
         elif choice == 3:
@@ -546,7 +545,6 @@ def show_left_location(state: dict) -> dict:
                 state["has_key"] = True
                 print(center_text(KEY))
                 print("¡Has obtenido una Llave dorada!")
-                input("\nPresione ENTER para continuar...")
             elif choice == 2:
                 print_slowly("Decides dejar la llave por ahora.")
             elif choice == 3:
@@ -562,6 +560,8 @@ def show_left_location(state: dict) -> dict:
                 show_inventory(state)
             else:
                 state["location"] = "cave"
+
+    input("\nPresione ENTER para continuar...")
     return state
 
 
@@ -593,7 +593,6 @@ def show_right_location(state: dict) -> dict:
             state["has_potion"] = True
             print(center_text(POTION))
             print(center_text("¡Has obtenido una Poción curativa!"))
-            input("\nPresione ENTER para continuar...")
         elif choice == 2:
             print_slowly("Decides dejar la poción por ahora.")
         elif choice == 3:
@@ -615,7 +614,8 @@ def show_right_location(state: dict) -> dict:
             else:
                 state["location"] = "cave"
         else:
-            options = ["\nUsar la llave dorada",
+            print()
+            options = ["Usar la llave dorada",
                        "Revisar tu inventario", "Volver atrás"]
             choice = get_choice(options)
 
@@ -627,6 +627,8 @@ def show_right_location(state: dict) -> dict:
                 show_inventory(state)
             else:
                 state["location"] = "cave"
+
+    input("\nPresione ENTER para continuar...")
     return state
 
 
@@ -641,7 +643,7 @@ def show_treasure_location(state: dict) -> dict:
     print(center_text(TREASURE))
     print_slowly("¡Entras en una cámara llena de tesoros brillantes!")
     print_slowly("Oro, joyas y artefactos antiguos llenan la sala.")
-    print_slowly("En el centro hay un cofre particularmente grande.")
+    print_slowly("En el centro hay un cofre particularmente grande.\n")
 
     options = ["Abrir el cofre central", "Recoger algunas monedas",
                "Revisar tu inventario", "Salir de la cámara"]
@@ -653,7 +655,6 @@ def show_treasure_location(state: dict) -> dict:
         time.sleep(1.5)
         print_slowly("¡UN DRAGÓN DESPIERTA DETRÁS DE TI!")
         state["location"] = "dragon"
-        input("Presione ENTER para continuar...")
     elif choice == 2:
         print_slowly("Recoges algunas monedas de oro y las guardas.")
         print_slowly("Sientes tus bolsillos muy pesados...")
@@ -662,6 +663,7 @@ def show_treasure_location(state: dict) -> dict:
     else:
         state["location"] = "right"
 
+    input("\nPresione ENTER para continuar...")
     return state
 
 
@@ -679,7 +681,7 @@ def show_dragon_location(state: dict) -> dict:
     print(center_text(DRAGON))
     print_slowly("¡Un enorme dragón rojo se alza frente a ti!")
     print_slowly("Sus ojos amarillos te miran fijamente mientras exhala humo " +
-                 "por sus fosas nasales.")
+                 "por sus fosas nasales.\n")
 
     if state["has_sword"]:
         options = ["Luchar con la espada antigua", "Huir",
@@ -742,6 +744,7 @@ def show_dragon_location(state: dict) -> dict:
         else:
             show_inventory(state)
     else:
+        print()
         options = ["Intentar huir", "Usar poción curativa",
                    "Revisar tu inventario"]
         choice = get_choice(options)
@@ -775,6 +778,7 @@ def show_dragon_location(state: dict) -> dict:
         else:
             show_inventory(state)
 
+    input("\nPresione ENTER para continuar...")
     return state
 
 
@@ -805,10 +809,8 @@ def show_forest_location(state: dict) -> dict:
             print(center_text(POTION))
             print(center_text("¡Has creado una Poción curativa!"))
             state["has_potion"] = True
-            input("\nPresione ENTER para continuar...")
         elif choice == 2:
             print_slowly("Decides no tocar las bayas desconocidas.")
-            input("\nPresione ENTER para continuar...")
         elif choice == 3:
             show_inventory(state)
         else:
@@ -827,12 +829,12 @@ def show_forest_location(state: dict) -> dict:
             print_slowly("Después de un rato, te das cuenta de que estás " +
                          "dando vueltas en círculos.")
             print("Decides regresar al punto de partida.")
-            input("Presione ENTER para continuar...")
         elif choice == 2:
             show_inventory(state)
         else:
             state["location"] = "start"
 
+    input("\nPresione ENTER para continuar...")
     return state
 
 
