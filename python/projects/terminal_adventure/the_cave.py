@@ -631,10 +631,150 @@ def show_right_location(state: dict) -> dict:
 
 
 def show_treasure_location(state: dict) -> dict:
+    """
+    Muestra la ubicación del tesoro y permite al jugador tomar una decisión.
+    Args:
+        state (dict): El estado actual del juego.
+    Returns:
+        dict: El estado actualizado del juego después de la elección del jugador.    
+    """
+    print(center_text(TREASURE))
+    print_slowly("¡Entras en una cámara llena de tesoros brillantes!")
+    print_slowly("Oro, joyas y artefactos antiguos llenan la sala.")
+    print_slowly("En el centro hay un cofre particularmente grande.")
+
+    options = ["Abrir el cofre central", "Recoger algunas monedas",
+               "Revisar tu inventario", "Salir de la cámara"]
+    choice = get_choice(options)
+
+    if choice == 1:
+        print_slowly("Te acercas al cofre central con cautela...")
+        print_slowly("Al abrirlo...")
+        time.sleep(1.5)
+        print_slowly("¡UN DRAGÓN DESPIERTA DETRÁS DE TI!")
+        state["location"] = "dragon"
+        input("Presione ENTER para continuar...")
+    elif choice == 2:
+        print_slowly("Recoges algunas monedas de oro y las guardas.")
+        print_slowly("Sientes tus bolsillos muy pesados...")
+    elif choice == 3:
+        show_inventory(state)
+    else:
+        state["location"] = "right"
+
     return state
 
 
 def show_dragon_location(state: dict) -> dict:
+    """
+    Muestra la ubicación del dragón y permite al jugador tomar decisiones
+    basadas en su estado actual.
+    Args:
+        state (dict): El estado actual del juego, incluyendo la salud del jugador,
+                      si tiene la espada antigua, si tiene pociones curativas, y
+                      la ubicación actual.
+    Returns:
+        dict: El estado actualizado del juego después de la interacción con el dragón.
+    """
+    print(center_text(DRAGON))
+    print_slowly("¡Un enorme dragón rojo se alza frente a ti!")
+    print_slowly("Sus ojos amarillos te miran fijamente mientras exhala humo " +
+                 "por sus fosas nasales.")
+
+    if state["has_sword"]:
+        options = ["Luchar con la espada antigua", "Huir",
+                   "Usar poción curativa", "Revisar tu inventario"]
+        choice = get_choice(options)
+
+        if choice == 1:
+            print_slowly(
+                "¡Empuñas la espada antigua, que comienza a brillar con una luz azul!")
+            print_slowly(
+                "El dragón retrocede ante el brillo, parece temer a la espada.")
+            print_slowly("Avanzas con determinación...")
+
+            # Probabilidad de éxito del 70%
+            if random.random() < 0.7:
+                print_slowly(
+                    "¡Con un movimiento rápido, logras herir al dragón!")
+                print_slowly("La bestia ruge de dolor y se retira volando por una " +
+                             "apertura en el techo.")
+                print_slowly("¡Has derrotado al dragón y el tesoro es tuyo!")
+                state["location"] = "exit"
+            else:
+                print_slowly(
+                    "¡El dragón es demasiado rápido y te golpea con su cola!")
+                state["health"] -= 50
+                print_slowly("¡Has perdido 50 puntos de salud! " +
+                             f"Salud actual: {state['health']}")
+                if state["health"] <= 0:
+                    print_slowly("El golpe es demasiado fuerte...")
+                    print_slowly("Todo se vuelve oscuro...")
+                    state["location"] = "death"
+                else:
+                    print_slowly("Te tambaleas pero logras mantenerte en pie.")
+        elif choice == 2:
+            print_slowly("Intentas huir del dragón...")
+            # Probabilidad de éxito del 40%
+            if random.random() < 0.4:
+                print_slowly("¡Logras escabullirte mientras el dragón está " +
+                             "distraído con el tesoro!")
+                state["location"] = "right"
+            else:
+                print_slowly(
+                    "¡El dragón te bloquea el paso y te ataca con sus garras!")
+                state["health"] -= 60
+                print_slowly("¡Has perdido 60 puntos de salud! " +
+                             f"Salud actual: {state['health']}")
+
+                if state["health"] <= 0:
+                    print_slowly("El ataque es letal...")
+                    state["location"] = "death"
+        elif choice == 3:
+            if state["has_potion"]:
+                print_slowly("Bebes rápidamente la poción curativa.")
+                state["health"] = min(100, state["health"] + 50)
+                print_slowly(
+                    f"¡Te has curado! Salud actual: {state['health']}")
+                state["has_potion"] = False
+            else:
+                print_slowly("¡No tienes ninguna poción curativa!")
+        else:
+            show_inventory(state)
+    else:
+        options = ["Intentar huir", "Usar poción curativa",
+                   "Revisar tu inventario"]
+        choice = get_choice(options)
+
+        if choice == 1:
+            print_slowly("Intentas huir del dragón...")
+            # Probabilidad baja de éxito sin espada
+            if random.random() < 0.2:
+                print_slowly("¡Por pura suerte logras escabullirte mientras el " +
+                             "dragón está distraído!")
+                state["location"] = "right"
+            else:
+                print_slowly(
+                    "¡El dragón te bloquea el paso y te ataca con fuego!")
+                state["health"] -= 70
+                print_slowly(
+                    f"¡Has perdido 70 puntos de salud! Salud actual: {state['health']}")
+
+                if state["health"] <= 0:
+                    print_slowly("Las llamas te consumen...")
+                    state["location"] = "death"
+        elif choice == 2:
+            if state["has_potion"]:
+                print_slowly("Bebes rápidamente la poción curativa.")
+                state["health"] = min(100, state["health"] + 50)
+                print_slowly(
+                    f"¡Te has curado! Salud actual: {state['health']}")
+                state["has_potion"] = False
+            else:
+                print_slowly("¡No tienes ninguna poción curativa!")
+        else:
+            show_inventory(state)
+
     return state
 
 
@@ -697,10 +837,57 @@ def show_forest_location(state: dict) -> dict:
 
 
 def show_exit_location(state: dict) -> dict:
+    """
+    Muestra el mensaje de victoria y finaliza el juego.
+
+    Esta función imprime un mensaje de victoria, felicitando al jugador por
+    haber conseguido el tesoro y derrotado al dragón. Luego, actualiza el
+    estado del juego para indicar que el jugador ha terminado de jugar.
+
+    Args:
+        state (dict): El estado actual del juego, incluyendo el nombre del
+                      jugador y si el juego está en curso.
+
+    Returns:
+        dict: El estado actualizado del juego, con 'is_playing' establecido
+              en False.
+    """
+    print(center_text(VICTORY))
+    print_slowly("¡Has conseguido el tesoro y derrotado al dragón!")
+    print_slowly(f"Felicidades, {state['player_name']}! Tu valentía " +
+                 "será recordada en las leyendas.")
+    print_slowly("El tesoro del dragón contiene riquezas más allá " +
+                 "de tus sueños.\n")
+    print(center_text("--- FIN DE LA AVENTURA ---"))
+    print_slowly("\n¡Has completado Terminal Adventure!")
+    state["is_playing"] = False
     return state
 
 
 def show_death_location(state: dict) -> dict:
+    """
+    Muestra un mensaje de muerte y finaliza el juego.
+
+    Esta función imprime un mensaje indicando que el jugador ha muerto y
+    que la aventura ha terminado. Actualiza el estado del juego para
+    reflejar que el jugador ya no está jugando.
+
+    Args:
+        state (dict): El estado actual del juego, incluyendo el nombre
+                      del jugador y si el juego está en curso.
+
+    Returns:
+        dict: El estado actualizado del juego con 'is_playing' establecido
+              en False.
+    """
+    print(center_text(RIP))
+    print_slowly("La oscuridad te envuelve...")
+    print_slowly("Lamentablemente, tu aventura termina aquí, " +
+                 f"{state['player_name']}.")
+    print_slowly("Quizás otro aventurero tenga más suerte en el futuro.\n")
+    print(center_text("--- FIN DE LA AVENTURA ---"))
+    print_slowly("\n¡Has fracasado en Terminal Adventure!")
+    state["is_playing"] = False
     return state
 
 
