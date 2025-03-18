@@ -253,22 +253,6 @@ VICTORY = r"""
          `-'
 """
 
-EXIT = r"""
-               [     ]                      [     ]
-              [_______][ ][ ][ ][][ ][ ][ ][_______]
-               |     |  ,----------------,  |     |
-               |     |/'    ____..____    '\|     |
-               |     |    /'    ||    '\    |     |
-               |     |   |o     ||     o|   |     |
-               |  _  |   |     _||_     |   |  _  |
-               | (_) |   |    (_||_)    |   | (_) |
-               |     |   |     (||)     |   |     |
-               |     |   |      ||      |   |     |
-               |     |   |o     ||     o|   |     |
-______________[_______]--'------''------'--[_______]_____________
-
-"""
-
 
 def main() -> None:
     """ Función principal del programa """
@@ -290,7 +274,11 @@ def main() -> None:
     time.sleep(2)
 
     print_slowly("¡Bienvenido a Terminal Adventure: La Cueva Misteriosa!")
-    state["player_name"] = input("\n¿Cuál es tu nombre, aventurero? > ")
+    while not state["player_name"]:
+        state["player_name"] = input("\n¿Cuál es tu nombre, " +
+                                     "aventurero? > ").strip()
+        if not state["player_name"]:
+            print("El nombre no puede estar vacío. Intenta de nuevo.")
     print(f"\n¡Saludos, {state["player_name"]}!\n")
 
     # Esperar un segundo.
@@ -454,7 +442,7 @@ def show_inventory(state: dict) -> None:
 |         Llave = {key}          |
 |         Poción = {potion}         |
 |                             |
-|         Salud = {health}         |
+|         Salud = {health}%        |
 |                             |
  ~~~~~~~~~~~~~~~~~~~~~~~ooO~~~
           |____|____|
@@ -474,7 +462,6 @@ def show_cave_location(state: dict) -> dict:
     Returns:
         dict: El estado actualizado del juego después de la elección del jugador.
     """
-    clear()
     print(center_text(CAVE))
     print_slowly("Entras a la cueva. Está oscuro y húmedo.")
     print_slowly("Tus pasos resuenan en las paredes rocosas.")
@@ -888,7 +875,8 @@ def show_death_location(state: dict) -> dict:
                  f"{state['player_name']}.")
     print_slowly("Quizás otro aventurero tenga más suerte en el futuro.\n")
     print(center_text("--- FIN DE LA AVENTURA ---"))
-    print_slowly("\n¡Has fracasado en Terminal Adventure: La Cueva Misteriosa!")
+    print_slowly(
+        "\n¡Has fracasado en Terminal Adventure: La Cueva Misteriosa!")
     state["is_playing"] = False
     return state
 
